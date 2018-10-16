@@ -12,7 +12,8 @@ class App extends Component {
 
     this.state = {
       vehiclesToDisplay: [],
-      buyersToDisplay: []
+      buyersToDisplay: [],
+      baseURL: 'https://joes-autos.herokuapp.com/api'
     };
 
     this.getVehicles = this.getVehicles.bind(this);
@@ -28,19 +29,41 @@ class App extends Component {
     this.deleteBuyer = this.deleteBuyer.bind(this);
   }
 
+  componentDidMount() { //if we want data to show immediately without the user
+    this.getVehicles()
+  }
+
   getVehicles() {
     // axios (GET)
     // setState with response -> vehiclesToDisplay
+    let promise = axios.get(`${this.state.baseURL}/vehicles`)
+    promise.then((res) => {
+      this.setState({
+        vehiclesToDisplay : res.data // all resolves have data
+      })
+    })
   }
 
   getPotentialBuyers() {
     // axios (GET)
     // setState with response -> buyersToDisplay
+    let promise = axios.get(`${this.state.baseURL}/buyers`)
+    promise.then((res) => {
+      this.setState({
+        buyersToDisplay: res.data
+      })
+    })
   }
 
   sellCar(id) {
     // axios (DELETE)
     // setState with response -> vehiclesToDisplay
+    let promise = axios.delete(`${this.state.baseURL}/vehicles/${id}`)
+    promise.then((res) => {
+      this.setState({
+        vehiclesToDisplay: res.data.vehicles
+      })
+    })
   }
 
   filterByMake() {
@@ -60,6 +83,13 @@ class App extends Component {
   updatePrice(priceChange, id) {
     // axios (PUT)
     // setState with response -> vehiclesToDisplay
+
+
+    let promise = axios.put(`${this.state.baseURL}/vehicles/${id}/${priceChange}`).then((res) => {
+      this.setState({
+        vehiclesToDisplay: res.data.vehicles
+      })
+    })
   }
 
   addCar() {
@@ -73,6 +103,13 @@ class App extends Component {
 
     // axios (POST)
     // setState with response -> vehiclesToDisplay
+    let promise = axios.post(`${this.state.baseURL}/vehicles`, newCar) // post needs 2 arguements
+    promise.then((res) => {
+      this.setState({
+        vehiclesToDisplay: res.data.vehicles
+      })
+    })
+
   }
 
   addBuyer() {
